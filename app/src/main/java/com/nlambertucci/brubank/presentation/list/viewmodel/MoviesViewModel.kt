@@ -4,18 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nlambertucci.brubank.domain.model.MovieListDto
-import com.nlambertucci.brubank.domain.model.SearchDto
+import com.nlambertucci.brubank.domain.model.*
 import com.nlambertucci.brubank.domain.repository.MovieRepository
+import com.nlambertucci.brubank.domain.usecase.DeleteMovieFromFavoritesUseCase
 import com.nlambertucci.brubank.domain.usecase.GetFavoritesMoviesUseCase
+import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase
+import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase_Factory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val repository: MovieRepository,
-    private val getFavoritesMoviesUseCase: GetFavoritesMoviesUseCase
+    private val getFavoritesMoviesUseCase: GetFavoritesMoviesUseCase,
+    private val saveMovieAsFavoriteUseCase: SaveMovieAsFavoriteUseCase,
+    private val deleteMovieFromFavoritesUseCase: DeleteMovieFromFavoritesUseCase
+
 ) : ViewModel() {
     sealed class MovieStatus {
         object Loading : MovieStatus()
@@ -26,6 +32,10 @@ class MoviesViewModel @Inject constructor(
 
     private val status = MutableLiveData<MovieStatus>()
     val moviesStatus: LiveData<MovieStatus> = status
+    private var favoritesMovies: List<Movie>? = null
+    init {
+        favoritesMovies = getFavoritesMoviesUseCase.getFavorites()
+    }
 
     fun initView() {
         fetchMovies()
@@ -62,7 +72,8 @@ class MoviesViewModel @Inject constructor(
                 repository.getMovieByName(query)
             }.onSuccess {response ->
                 response.body()?.movies?.let {
-                    status.value = MovieStatus.SearchSuccess(SearchDto(it))
+                    status.value = MovieStatus.SearchSuccess(
+                        SearchDto(it,favoritesMovies))
                 }
                 return@launch
             }.onFailure {
@@ -70,4 +81,21 @@ class MoviesViewModel @Inject constructor(
             }
         }
     }
+
+    fun setAsFavorite(movie: Movie) {
+        saveMovieAsFavorite(movie)
+    }
+
+    private fun saveMovieAsFavorite(movie: Movie) {
+        saveMovieAsFavoriteUseCase.saveMovieAsFavorite(movie)
+    }
+
+    fun removeMovieFromFavorites(movie: Movie) {
+        deleteMovieFromFavorites(movie)
+    }
+
+    private fun deleteMovieFromFavorites(movie: Movie) {
+        deleteMovieFromFavoritesUseCase.deleteMovie(movie)
+    }
+
 }

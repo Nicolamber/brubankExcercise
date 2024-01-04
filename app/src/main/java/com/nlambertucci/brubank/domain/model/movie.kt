@@ -15,7 +15,5 @@ data class Movie(
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("release_date")
-    val releaseDate: String,
-    @SerializedName("genre_ids")
-    val genres: List<Int>
+    val releaseDate: String
 ): Parcelable

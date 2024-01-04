@@ -7,6 +7,9 @@
     <string name="overview_title">Resumen</string>
     <string name="is_favorite_text">Remover de favoritos</string>
     <string name="is_not_favorite_text">Agregar a Favoritos</string>
+    <string name="retry_text">Reintentar</string>
+    <string name="delete_from_fav_text">Eliminar</string>
+    <string name="add_to_fav_text">Agregar</string>
 
     <!-- Textos de prueba para previsualizar -->
     <string name="movie_item_test_text">Este es un texto largo para probar que la ui es responsiva ante estos textos</string>
@@ -16,5 +19,5 @@
     <string name="title_test">AVENGERS</string>
     <string name="loading_text">Cargando...</string>
     <string name="error_message_test">Ocurrió un error, vuelve a intentar</string>
-    <string name="retry_text">Reintentar</string>
+
 </resources>
