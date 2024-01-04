@@ -1,0 +1,133 @@
+package com.nlambertucci.brubank.presentation.detail
+
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.nlambertucci.brubank.R
+import com.nlambertucci.brubank.common.Constants
+import com.nlambertucci.brubank.common.isVisible
+import com.nlambertucci.brubank.databinding.ActivityMovieDetailBinding
+import com.nlambertucci.brubank.domain.model.DetailDto
+import com.nlambertucci.brubank.domain.model.Movie
+import com.nlambertucci.brubank.presentation.detail.viewmodel.MovieDetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class MovieDetailActivity : AppCompatActivity() {
+
+    private val viewModel: MovieDetailViewModel by viewModels()
+    private val binding: ActivityMovieDetailBinding by lazy {
+        ActivityMovieDetailBinding.inflate(layoutInflater)
+    }
+
+    private var movie: Movie? = null
+    private var dominantColor: Int = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        supportActionBar?.hide()
+        getIntentData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initView()
+    }
+
+    private fun initView() {
+        viewModel.detailLiveStatus.observe(this) { status ->
+            when (status) {
+                is MovieDetailViewModel.DetailStatus.Loading -> {}
+                is MovieDetailViewModel.DetailStatus.Success -> {
+                    initUiComponents(status.detailDto)
+                }
+                is MovieDetailViewModel.DetailStatus.Error -> {}
+            }
+        }
+        viewModel.initView(movie, this)
+    }
+
+    private fun initUiComponents(detailDto: DetailDto) {
+        initBackButton()
+        Glide.with(this)
+            .asBitmap()
+            .load(Constants.IMAGE_BASE_PATH + detailDto.movie.posterPath)
+            .into(
+                object: CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        binding.moviePoster.setImageBitmap(resource)
+                        Palette.from(resource).generate{ palette: Palette? ->
+                            dominantColor = palette?.dominantSwatch?.rgb ?: Color.TRANSPARENT
+                            binding.detailContainer.setBackgroundColor(dominantColor)
+                            binding.setAsFavButton.setTextColor(dominantColor)
+                        }
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        // No se va a usar
+                    }
+
+                }
+            )
+        binding.moviePoster.isVisible = true
+        binding.movieTitle.text = detailDto.movie.title
+        binding.movieTitle.isVisible = true
+        binding.movieReleaseDate.text = detailDto.movie.releaseDate
+        binding.movieReleaseDate.isVisible = true
+        initFavButton(detailDto)
+        binding.overviewTitle.isVisible = true
+        binding.overviewDescription.text = detailDto.movie.overview
+        binding.overviewDescription.isVisible = true
+
+    }
+
+    private fun initBackButton() {
+        binding.backButton.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun initFavButton(detailDto: DetailDto) {
+        binding.setAsFavButton.apply {
+            text =
+                if (detailDto.isFavorite) getString(R.string.is_favorite_text)
+                else getString(R.string.is_not_favorite_text)
+            setOnClickListener {
+                text = if (detailDto.isFavorite) {
+                    viewModel.removeMovieFromFavorites(detailDto.movie)
+                    getString(R.string.is_not_favorite_text)
+                } else {
+                    viewModel.setAsFavorite(detailDto.movie)
+                    getString(R.string.is_favorite_text)
+                }
+            }
+            isVisible = true
+        }
+    }
+
+    private fun getIntentData() {
+        movie = intent.getParcelableExtra(Constants.MOVIE_DETAIL) as Movie?
+    }
+
+
+    companion object {
+        fun newInstance(context: Context, movie: Movie): Intent {
+            val intent = Intent(context, MovieDetailActivity::class.java)
+            intent.putExtra(Constants.MOVIE_DETAIL, movie)
+            return intent
+        }
+    }
+}

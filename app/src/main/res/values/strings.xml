@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Movies!</string>
+    <string name="search_movie_hint">Busca tu película</string>
+    <string name="movie_poster_content_description">Portada de la película</string>
+    <string name="fav_movies_title">Tus películas favoritas</string>
+    <string name="recommended_movies_title">Películas recomendadas</string>
+    <string name="overview_title">Resumen</string>
+    <string name="is_favorite_text">Remover de favoritos</string>
+    <string name="is_not_favorite_text">Agregar a Favoritos</string>
+
+    <!-- Textos de prueba para previsualizar -->
+    <string name="movie_item_test_text">Este es un texto largo para probar que la ui es responsiva ante estos textos</string>
+    <string name="overview_description_test">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim ven, dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="set_as_fav_test">Agregar a Favoritos</string>
+    <string name="release_date_test">Dec, 2023</string>
+    <string name="title_test">AVENGERS</string>
+    <string name="loading_text">Cargando...</string>
+    <string name="error_message_test">Ocurrió un error, vuelve a intentar</string>
+    <string name="retry_text">Reintentar</string>
+</resources>
