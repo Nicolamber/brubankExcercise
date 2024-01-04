@@ -2,15 +2,14 @@ package com.nlambertucci.brubank.presentation.list
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nlambertucci.brubank.common.isVisible
 import com.nlambertucci.brubank.databinding.ActivityMainBinding
 import com.nlambertucci.brubank.domain.model.Movie
-import com.nlambertucci.brubank.domain.model.MovieListDto
 import com.nlambertucci.brubank.domain.model.SearchDto
 import com.nlambertucci.brubank.presentation.actions.AdapterActionsInterface
 import com.nlambertucci.brubank.presentation.detail.MovieDetailActivity
@@ -19,10 +18,16 @@ import com.nlambertucci.brubank.presentation.list.adapter.MovieListAdapter
 import com.nlambertucci.brubank.presentation.list.adapter.SearchResultAdapter
 import com.nlambertucci.brubank.presentation.list.viewmodel.MoviesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: MoviesViewModel by viewModels()
+
+    @Inject
+    lateinit var movieListAdapter: MovieListAdapter
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -48,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
                 is MoviesViewModel.MovieStatus.Success -> {
                     binding.loading.hideLoadingScreen()
-                    initUiComponents(status.moviesDto)
+                   initUiComponents(status.favorites)
                 }
 
                 is MoviesViewModel.MovieStatus.SearchSuccess -> {
@@ -65,31 +70,51 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.initView()
+
     }
 
-    private fun initUiComponents(moviesDto: MovieListDto) {
+    private fun initUiComponents(favorites: List<Movie>?) {
         binding.recommendedList.layoutManager = LinearLayoutManager(this)
-        binding.recommendedList.isNestedScrollingEnabled = false
         binding.recommendedList.isVisible = true
-        binding.recommendedList.adapter = MovieListAdapter(this, moviesDto.movies) {
-            navigateToNextScreen(it)
+        binding.recommendedList.adapter = movieListAdapter
+        lifecycleScope.launch {
+            viewModel.moviesList.collectLatest {
+                movieListAdapter.submitData(it)
+            }
         }
 
-        moviesDto.favorites ?: return
-        binding.favoritesTitle.isVisible = moviesDto.favorites.isNotEmpty()
+        lifecycleScope.launch {
+            movieListAdapter.loadStateFlow.collectLatest{
+                val state = it.refresh
+                if ( state is LoadState.Loading){
+                    binding.apply {
+                        recommendedTitle.isVisible = false
+                        favoritesTitle.isVisible = false
+                        loading.showLoadingScreen()
+                    }
+                }else {
+                    binding.apply {
+                        recommendedTitle.isVisible = true
+                        favoritesTitle.isVisible = true
+                        loading.hideLoadingScreen()
+                    }
+
+                }
+            }
+        }
+
+        favorites ?: return
+        binding.favoritesTitle.isVisible = favorites.isNotEmpty()
         binding.favoritesList.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.favoritesList.adapter = FavoritesAdapter(this, moviesDto.favorites) {
+        binding.favoritesList.adapter = FavoritesAdapter(this, favorites) {
             navigateToNextScreen(it)
         }
-        binding.favoritesList.isVisible = moviesDto.favorites.isNotEmpty()
-        binding.favoritesList.isVisible = moviesDto.favorites.isNotEmpty()
+        binding.favoritesList.isVisible = favorites.isNotEmpty()
+        binding.favoritesList.isVisible = favorites.isNotEmpty()
 
         initSearchView()
-        Handler(Looper.getMainLooper()).postDelayed({}, 5000L)
-
     }
-
 
     private fun showSearchResults(searchResult: SearchDto) {
         binding.searchResultList.layoutManager = LinearLayoutManager(this)

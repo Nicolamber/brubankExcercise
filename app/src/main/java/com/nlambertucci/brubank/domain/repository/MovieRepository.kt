@@ -4,7 +4,7 @@ import com.nlambertucci.brubank.domain.model.MoviesResponse
 import retrofit2.Response
 
 interface MovieRepository {
-    suspend fun getMovies(): Response<MoviesResponse>
+    suspend fun getMovies(page: Int): Response<MoviesResponse>
     suspend fun getMovieByName(name: String): Response<MoviesResponse>
 
 }
