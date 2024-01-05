@@ -13,7 +13,11 @@
 
     <!-- Textos de prueba para previsualizar -->
     <string name="movie_item_test_text">Este es un texto largo para probar que la ui es responsiva ante estos textos</string>
-    <string name="overview_description_test">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim ven, dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="overview_description_test">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+        dolore magna aliqua. Non pulvinar neque laoreet suspendisse interdum consectetur libero id. Auctor neque vitae tempus quam. Tristique senectus
+        et netus et. Leo vel orci porta non. Duis at tellus at urna. Nunc aliquet bibendum enim facilisis gravida neque convallis a. Eget duis at tellus
+        at urna. Orci a scelerisque purus semper eget duis at tellus. Dignissim diam quis enim lobortis scelerisque. Lacus vestibulum sed arcu non odio
+        euismod lacinia.</string>
     <string name="set_as_fav_test">Agregar a Favoritos</string>
     <string name="release_date_test">Dec, 2023</string>
     <string name="title_test">AVENGERS</string>

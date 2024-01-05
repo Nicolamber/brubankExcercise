@@ -91,7 +91,17 @@ class MovieDetailActivity : AppCompatActivity() {
         binding.overviewTitle.isVisible = true
         binding.overviewDescription.text = detailDto.movie.overview
         binding.overviewDescription.isVisible = true
+        binding.detailList.setOnScrollChangeListener{_, _, scrollY, _, _ ->
+            val minHeight = 200
+            val originalHeight = 400
+            val scaleValue = 1.0f.coerceAtMost(1.0f - (scrollY / originalHeight.toFloat()))
 
+            if (scrollY < originalHeight - minHeight) {
+                binding.moviePoster.scaleX = scaleValue
+                binding.moviePoster.scaleY = scaleValue
+            }
+
+        }
     }
 
     private fun initBackButton() {
