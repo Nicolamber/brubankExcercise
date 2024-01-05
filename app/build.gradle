@@ -70,4 +70,8 @@ dependencies {
     // Glide for images
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "androidx.palette:palette:1.0.0"
+
+    //paging
+    implementation "androidx.paging:paging-common-ktx:$pagging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$pagging_version"
 }

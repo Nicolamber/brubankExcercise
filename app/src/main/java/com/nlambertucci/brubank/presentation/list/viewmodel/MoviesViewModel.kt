@@ -4,15 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import com.nlambertucci.brubank.domain.model.*
 import com.nlambertucci.brubank.domain.repository.MovieRepository
-import com.nlambertucci.brubank.domain.usecase.DeleteMovieFromFavoritesUseCase
-import com.nlambertucci.brubank.domain.usecase.GetFavoritesMoviesUseCase
-import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase
-import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase_Factory
+import com.nlambertucci.brubank.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +22,7 @@ class MoviesViewModel @Inject constructor(
 ) : ViewModel() {
     sealed class MovieStatus {
         object Loading : MovieStatus()
-        data class Success(val moviesDto: MovieListDto) : MovieStatus()
+        data class Success(val favorites: List<Movie>?) : MovieStatus()
         data class Error(val message: String?) : MovieStatus()
         data class SearchSuccess(val searchResult: SearchDto) : MovieStatus()
     }
@@ -33,35 +30,25 @@ class MoviesViewModel @Inject constructor(
     private val status = MutableLiveData<MovieStatus>()
     val moviesStatus: LiveData<MovieStatus> = status
     private var favoritesMovies: List<Movie>? = null
+
+    val moviesList = Pager(PagingConfig(pageSize = 20)) {
+        GetMoviesPaginatedUseCase(repository)
+    }.flow.cachedIn(viewModelScope)
+
     init {
         favoritesMovies = getFavoritesMoviesUseCase.getFavorites()
     }
 
     fun initView() {
-        fetchMovies()
+        fetchFavoritesMovies()
     }
 
-    private fun fetchMovies() {
+    private fun fetchFavoritesMovies() {
         status.value = MovieStatus.Loading
-        viewModelScope.launch {
-            kotlin.runCatching {
-                repository.getMovies()
-            }.onSuccess { response ->
-                response.body()?.movies?.let {
-                    val moviesDto = MovieListDto(
-                        it,
-                        getFavoritesMoviesUseCase.getFavorites()
-                    )
-                    status.value = MovieStatus.Success(moviesDto)
-                    return@launch
-                }
-            }.onFailure {
-                status.value = MovieStatus.Error(it.message)
-            }
-        }
+        status.value = MovieStatus.Success(favoritesMovies)
     }
 
-    fun searchMovie(query: String){
+    fun searchMovie(query: String) {
         getMovieByQuery(query)
     }
 
@@ -70,10 +57,11 @@ class MoviesViewModel @Inject constructor(
         viewModelScope.launch {
             kotlin.runCatching {
                 repository.getMovieByName(query)
-            }.onSuccess {response ->
+            }.onSuccess { response ->
                 response.body()?.movies?.let {
                     status.value = MovieStatus.SearchSuccess(
-                        SearchDto(it,favoritesMovies))
+                        SearchDto(it, favoritesMovies)
+                    )
                 }
                 return@launch
             }.onFailure {

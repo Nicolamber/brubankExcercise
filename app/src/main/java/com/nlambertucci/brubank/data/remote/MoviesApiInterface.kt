@@ -13,9 +13,9 @@ interface MoviesApiInterface {
 
     @GET("movie/popular")
     suspend fun getMovies(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("language") language: String = Constants.LANGUAGE,
-        @Query("page") page: Int = 1
+        @Query("api_key") apiKey: String ,
+        @Query("language") language: String,
+        @Query("page") page: Int
     ): Response<MoviesResponse>
 
     @GET("search/movie")
