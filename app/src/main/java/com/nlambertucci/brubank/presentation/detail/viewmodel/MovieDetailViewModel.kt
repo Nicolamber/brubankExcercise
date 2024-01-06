@@ -28,13 +28,14 @@ class MovieDetailViewModel @Inject constructor(
     private val detailStatus = MutableLiveData<DetailStatus>()
     val detailLiveStatus: LiveData<DetailStatus> = detailStatus
 
-    fun initView(movie: Movie?, context: Context) {
+    fun initView(movie: Movie?) {
         movie ?: return
-        parseData(movie, context)
+        parseData(movie)
     }
 
-    private fun parseData(movie: Movie, context: Context) {
+    private fun parseData(movie: Movie) {
         detailStatus.value = DetailStatus.Loading
+        try {
             val favMovies = getFavoritesMoviesUseCase.getFavorites() ?: listOf()
             val isFavorite = favMovies.contains(movie)
             val detailDto = DetailDto(
@@ -42,6 +43,11 @@ class MovieDetailViewModel @Inject constructor(
                 isFavorite = isFavorite
             )
             detailStatus.value = DetailStatus.Success(detailDto)
+            return
+        }catch (e: Exception){
+            detailStatus.value = DetailStatus.Error(e.message ?: "")
+        }
+
     }
 
     fun setAsFavorite(movie: Movie) {

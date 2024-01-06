@@ -9,10 +9,8 @@ import com.nlambertucci.brubank.domain.repository.MovieRepository
 import com.nlambertucci.brubank.domain.usecase.DeleteMovieFromFavoritesUseCase
 import com.nlambertucci.brubank.domain.usecase.GetFavoritesMoviesUseCase
 import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase
-import com.nlambertucci.brubank.domain.usecase.SaveMovieAsFavoriteUseCase_Factory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,8 +29,9 @@ class MoviesViewModel @Inject constructor(
     }
 
     private val status = MutableLiveData<MovieStatus>()
-    val moviesStatus: LiveData<MovieStatus> = status
+    val moviesLiveStatus: LiveData<MovieStatus> = status
     private var favoritesMovies: List<Movie>? = null
+
     init {
         favoritesMovies = getFavoritesMoviesUseCase.getFavorites()
     }
@@ -61,7 +60,7 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    fun searchMovie(query: String){
+    fun searchMovie(query: String) {
         getMovieByQuery(query)
     }
 
@@ -70,10 +69,14 @@ class MoviesViewModel @Inject constructor(
         viewModelScope.launch {
             kotlin.runCatching {
                 repository.getMovieByName(query)
-            }.onSuccess {response ->
+            }.onSuccess { response ->
                 response.body()?.movies?.let {
                     status.value = MovieStatus.SearchSuccess(
-                        SearchDto(it,favoritesMovies))
+                        SearchDto(
+                            it,
+                            favoritesMovies
+                        )
+                    )
                 }
                 return@launch
             }.onFailure {

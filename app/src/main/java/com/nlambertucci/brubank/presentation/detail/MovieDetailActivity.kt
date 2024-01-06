@@ -54,7 +54,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 is MovieDetailViewModel.DetailStatus.Error -> {}
             }
         }
-        viewModel.initView(movie, this)
+        viewModel.initView(movie)
     }
 
     private fun initUiComponents(detailDto: DetailDto) {
@@ -63,13 +63,13 @@ class MovieDetailActivity : AppCompatActivity() {
             .asBitmap()
             .load(Constants.IMAGE_BASE_PATH + detailDto.movie.posterPath)
             .into(
-                object: CustomTarget<Bitmap>() {
+                object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
                         binding.moviePoster.setImageBitmap(resource)
-                        Palette.from(resource).generate{ palette: Palette? ->
+                        Palette.from(resource).generate { palette: Palette? ->
                             dominantColor = palette?.dominantSwatch?.rgb ?: Color.TRANSPARENT
                             binding.detailContainer.setBackgroundColor(dominantColor)
                             binding.setAsFavButton.setTextColor(dominantColor)
@@ -91,7 +91,7 @@ class MovieDetailActivity : AppCompatActivity() {
         binding.overviewTitle.isVisible = true
         binding.overviewDescription.text = detailDto.movie.overview
         binding.overviewDescription.isVisible = true
-        binding.detailList.setOnScrollChangeListener{_, _, scrollY, _, _ ->
+        binding.detailList.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val minHeight = 200
             val originalHeight = 400
             val scaleValue = 1.0f.coerceAtMost(1.0f - (scrollY / originalHeight.toFloat()))

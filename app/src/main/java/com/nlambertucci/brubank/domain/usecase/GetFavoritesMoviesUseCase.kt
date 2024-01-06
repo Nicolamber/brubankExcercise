@@ -4,7 +4,7 @@ import com.nlambertucci.brubank.domain.model.Movie
 import com.nlambertucci.brubank.domain.repository.FavoritesRepository
 import javax.inject.Inject
 
-class GetFavoritesMoviesUseCase @Inject constructor(
+open class GetFavoritesMoviesUseCase @Inject constructor(
     private val repository: FavoritesRepository
 ) {
 

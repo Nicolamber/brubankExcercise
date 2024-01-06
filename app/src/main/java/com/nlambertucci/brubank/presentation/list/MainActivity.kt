@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        viewModel.moviesStatus.observe(this) { status ->
+        viewModel.moviesLiveStatus.observe(this) { status ->
             when (status) {
                 is MoviesViewModel.MovieStatus.Loading -> {
                     binding.loading.showLoadingScreen()

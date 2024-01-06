@@ -4,11 +4,11 @@ import com.nlambertucci.brubank.domain.model.Movie
 import com.nlambertucci.brubank.domain.repository.FavoritesRepository
 import javax.inject.Inject
 
-class DeleteMovieFromFavoritesUseCase @Inject constructor(
+open class DeleteMovieFromFavoritesUseCase @Inject constructor(
     private val repository: FavoritesRepository
 ) {
 
-    fun deleteMovie(movie: Movie){
+    fun deleteMovie(movie: Movie) {
         repository.deleteMovieFromFavorites(movie)
     }
 }
