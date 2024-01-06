@@ -26,7 +26,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesFavoritesRepository(sharedPref: SharedPreferences): FavoritesRepository{
+    fun providesFavoritesRepository(sharedPref: SharedPreferences): FavoritesRepository {
         return FavoritesRepositoryImpl(sharedPref)
     }
 
@@ -35,6 +35,7 @@ object RepositoryModule {
     fun providesGetFavoritesUseCase(repository: FavoritesRepository): GetFavoritesMoviesUseCase {
         return GetFavoritesMoviesUseCase(repository)
     }
+
     @Provides
     @Singleton
     fun providesSaveFavoritesUseCase(repository: FavoritesRepository): SaveMovieAsFavoriteUseCase {

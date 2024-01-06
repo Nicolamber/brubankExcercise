@@ -56,6 +56,7 @@ class MoviesViewModel @Inject constructor(
                 }
             }.onFailure {
                 status.value = MovieStatus.Error(it.message)
+                return@launch
             }
         }
     }
@@ -81,6 +82,7 @@ class MoviesViewModel @Inject constructor(
                 return@launch
             }.onFailure {
                 status.value = MovieStatus.Error(it.message)
+                return@launch
             }
         }
     }

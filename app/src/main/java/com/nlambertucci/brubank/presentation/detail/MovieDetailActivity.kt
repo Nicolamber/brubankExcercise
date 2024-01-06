@@ -47,11 +47,20 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun initView() {
         viewModel.detailLiveStatus.observe(this) { status ->
             when (status) {
-                is MovieDetailViewModel.DetailStatus.Loading -> {}
+                is MovieDetailViewModel.DetailStatus.Loading -> {
+                    binding.errorScreen.hideErrorComponent()
+                    binding.loading.showLoadingScreen()
+                }
                 is MovieDetailViewModel.DetailStatus.Success -> {
                     initUiComponents(status.detailDto)
+                    binding.loading.hideLoadingScreen()
                 }
-                is MovieDetailViewModel.DetailStatus.Error -> {}
+                is MovieDetailViewModel.DetailStatus.Error -> {
+                    binding.loading.hideLoadingScreen()
+                    binding.errorScreen.showErrorComponent {
+                        viewModel.initView(movie)
+                    }
+                }
             }
         }
         viewModel.initView(movie)
@@ -59,6 +68,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun initUiComponents(detailDto: DetailDto) {
         initBackButton()
+
         Glide.with(this)
             .asBitmap()
             .load(Constants.IMAGE_BASE_PATH + detailDto.movie.posterPath)
@@ -82,15 +92,21 @@ class MovieDetailActivity : AppCompatActivity() {
 
                 }
             )
-        binding.moviePoster.isVisible = true
-        binding.movieTitle.text = detailDto.movie.title
-        binding.movieTitle.isVisible = true
-        binding.movieReleaseDate.text = detailDto.movie.releaseDate
-        binding.movieReleaseDate.isVisible = true
+
+        with(binding){
+            movieTitle.text = detailDto.movie.title
+            movieReleaseDate.text = detailDto.movie.releaseDate
+            overviewDescription.text = detailDto.movie.overview
+
+            moviePoster.isVisible = true
+            movieTitle.isVisible = true
+            movieReleaseDate.isVisible = true
+            overviewTitle.isVisible = true
+            overviewDescription.isVisible = true
+        }
+
         initFavButton(detailDto)
-        binding.overviewTitle.isVisible = true
-        binding.overviewDescription.text = detailDto.movie.overview
-        binding.overviewDescription.isVisible = true
+
         binding.detailList.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val minHeight = 200
             val originalHeight = 400

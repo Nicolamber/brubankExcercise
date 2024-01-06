@@ -25,7 +25,10 @@ class SaveMovieAsFavoriteUseCaseTest {
 
     @Test
     fun `test saveMovieAsFavorite should save the movie`() {
-        val mockedMovie = Movie("1", "Avengers: End game", "", "", "", "")
+
+        val mockedMovie = Movie(
+            "1", "Avengers: End game", "", "", "", ""
+        )
 
         saveMovieAsFavoriteUseCase.saveMovieAsFavorite(mockedMovie)
 

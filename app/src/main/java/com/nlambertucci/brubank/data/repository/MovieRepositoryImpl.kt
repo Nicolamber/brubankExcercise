@@ -9,6 +9,7 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val api: MoviesApiInterface
 ) : MovieRepository {
+
     override suspend fun getMovies(): Response<MoviesResponse> {
         return api.getMovies()
     }

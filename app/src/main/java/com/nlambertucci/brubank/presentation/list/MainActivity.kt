@@ -2,8 +2,6 @@ package com.nlambertucci.brubank.presentation.list
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private val viewModel: MoviesViewModel by viewModels()
 
     private val binding: ActivityMainBinding by lazy {
@@ -43,12 +42,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.moviesLiveStatus.observe(this) { status ->
             when (status) {
                 is MoviesViewModel.MovieStatus.Loading -> {
+                    binding.errorScreen.hideErrorComponent()
                     binding.loading.showLoadingScreen()
                 }
 
                 is MoviesViewModel.MovieStatus.Success -> {
-                    binding.loading.hideLoadingScreen()
                     initUiComponents(status.moviesDto)
+                    binding.loading.hideLoadingScreen()
                 }
 
                 is MoviesViewModel.MovieStatus.SearchSuccess -> {
@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
                     binding.errorScreen.showErrorComponent {
                         viewModel.initView()
                     }
-                    binding.errorScreen.hideErrorComponent()
                 }
             }
         }
@@ -68,35 +67,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUiComponents(moviesDto: MovieListDto) {
-        binding.recommendedList.layoutManager = LinearLayoutManager(this)
-        binding.recommendedList.isNestedScrollingEnabled = false
-        binding.recommendedList.isVisible = true
-        binding.recommendedList.adapter = MovieListAdapter(this, moviesDto.movies) {
-            navigateToNextScreen(it)
+        with(binding){
+            recommendedTitle.isVisible = true
+            recommendedList.apply {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                isNestedScrollingEnabled = false
+                adapter = MovieListAdapter(this@MainActivity, moviesDto.movies) {
+                    navigateToNextScreen(it)
+                }
+                isVisible = true
+            }
         }
+
 
         moviesDto.favorites ?: return
-        binding.favoritesTitle.isVisible = moviesDto.favorites.isNotEmpty()
-        binding.favoritesList.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.favoritesList.adapter = FavoritesAdapter(this, moviesDto.favorites) {
-            navigateToNextScreen(it)
+        with(binding){
+            favoritesTitle.isVisible = moviesDto.favorites.isNotEmpty()
+            favoritesList.apply {
+                layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                adapter = FavoritesAdapter(this@MainActivity, moviesDto.favorites) {
+                    navigateToNextScreen(it)
+                }
+                isVisible = moviesDto.favorites.isNotEmpty()
+            }
         }
-        binding.favoritesList.isVisible = moviesDto.favorites.isNotEmpty()
-        binding.favoritesList.isVisible = moviesDto.favorites.isNotEmpty()
 
         initSearchView()
-        Handler(Looper.getMainLooper()).postDelayed({}, 5000L)
-
     }
 
 
     private fun showSearchResults(searchResult: SearchDto) {
-        binding.searchResultList.layoutManager = LinearLayoutManager(this)
-        binding.searchResultList.isNestedScrollingEnabled = false
-        binding.searchResultList.isVisible = true
-        binding.favoritesList.isVisible = false
-        binding.favoritesTitle.isVisible = false
+        with(binding){
+            searchResultList.apply {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                isNestedScrollingEnabled = false
+               isVisible = true
+            }
+            favoritesList.isVisible = false
+            favoritesTitle.isVisible = false
+            recommendedTitle.isVisible = false
+            recommendedList.isVisible = false
+        }
         val itemActionsListener = object : AdapterActionsInterface {
             override fun onContainerClicked(movie: Movie) {
                 navigateToNextScreen(movie)
@@ -111,7 +122,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        binding.recommendedList.adapter = SearchResultAdapter(this, searchResult, itemActionsListener)
+
+        binding.searchResultList.adapter =
+            SearchResultAdapter(this, searchResult, itemActionsListener)
     }
 
     private fun initSearchView() {

@@ -26,7 +26,9 @@ class DeleteMovieFromFavoritesUseCaseTest {
     @Test
     fun `test deleteMovie should remove movie from favorites`() {
 
-        val movie = Movie("1", "Avengers: End game", "", "", "", "")
+        val movie = Movie(
+            "1", "Avengers: End game", "", "", "", ""
+        )
 
         deleteMoviesFromFavoritesUseCase.deleteMovie(movie)
 

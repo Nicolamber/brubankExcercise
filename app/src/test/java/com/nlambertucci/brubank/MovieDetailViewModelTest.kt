@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.given
 
 class MovieDetailViewModelTest {
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -51,8 +52,11 @@ class MovieDetailViewModelTest {
     @Test
     fun `initView with valid movie should update status to Success`() {
 
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
         val favoriteMovies = listOf(movie)
+
         given(getFavoritesMoviesUseCase.getFavorites()).willReturn(favoriteMovies)
 
         viewModel.initView(movie)
@@ -65,7 +69,10 @@ class MovieDetailViewModelTest {
 
     @Test
     fun `initView should show error status when something went wrong`() {
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
         val message = "Something went wrong"
 
         given(getFavoritesMoviesUseCase.getFavorites()).willThrow(NullPointerException(message))
@@ -78,7 +85,9 @@ class MovieDetailViewModelTest {
 
     @Test
     fun `setAsFavorite should save movie as favorite`() {
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
 
         viewModel.setAsFavorite(movie)
 
@@ -87,7 +96,9 @@ class MovieDetailViewModelTest {
 
     @Test
     fun `removeMovieFromFavorites should remove movie as favorite`() {
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
 
         viewModel.removeMovieFromFavorites(movie)
 

@@ -1,6 +1,6 @@
 package com.nlambertucci.brubank.presentation.detail.viewmodel
 
-import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,7 +44,7 @@ class MovieDetailViewModel @Inject constructor(
             )
             detailStatus.value = DetailStatus.Success(detailDto)
             return
-        }catch (e: Exception){
+        } catch (e: Exception) {
             detailStatus.value = DetailStatus.Error(e.message ?: "")
         }
 

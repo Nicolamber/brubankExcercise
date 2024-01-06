@@ -14,14 +14,14 @@ class FavoritesAdapter(
     private val context: Context,
     private val movies: List<Movie>,
     private val onItemSelected: (Movie) -> Unit
-): RecyclerView.Adapter<FavoritesViewHolder>() {
+) : RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
-        val binding =FavoriteItemBinding.inflate(
+        val binding = FavoriteItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return  FavoritesViewHolder(binding)
+        return FavoritesViewHolder(binding)
     }
 
     override fun getItemCount(): Int = movies.size
@@ -31,16 +31,16 @@ class FavoritesAdapter(
         holder.itemView.setOnClickListener { onItemSelected(movies[position]) }
     }
 
-}
 
-class FavoritesViewHolder(
-    private val binding: FavoriteItemBinding
-):RecyclerView.ViewHolder(binding.root){
+    inner class FavoritesViewHolder(
+        private val binding: FavoriteItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(movie: Movie, context: Context){
-        Glide.with(context)
-            .load(Constants.IMAGE_BASE_PATH + movie.posterPath)
-            .into(binding.favPoster)
-        binding.favPoster.isVisible = true
+        fun bind(movie: Movie, context: Context) {
+            Glide.with(context)
+                .load(Constants.IMAGE_BASE_PATH + movie.posterPath)
+                .into(binding.favPoster)
+            binding.favPoster.isVisible = true
+        }
     }
 }

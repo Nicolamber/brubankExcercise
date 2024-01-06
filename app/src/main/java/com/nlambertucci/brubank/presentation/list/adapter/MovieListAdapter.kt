@@ -14,7 +14,7 @@ class MovieListAdapter(
     private val context: Context,
     private val movies: List<Movie>,
     private val onItemSelected: (Movie) -> Unit
-): RecyclerView.Adapter<MovieViewHolder>() {
+) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = MovieItemBinding.inflate(inflater, parent, false)
@@ -28,26 +28,26 @@ class MovieListAdapter(
         holder.itemView.setOnClickListener { onItemSelected(movies[position]) }
     }
 
-}
 
-class MovieViewHolder(
-    private val binding: MovieItemBinding
-): RecyclerView.ViewHolder(binding.root){
+    inner class MovieViewHolder(
+        private val binding: MovieItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(movie: Movie){
-        binding.moviePoster.apply {
-            Glide.with(context)
-                .load(Constants.IMAGE_BASE_PATH + movie.backdropPath)
-                .into(this)
-            isVisible = true
-        }
-        binding.movieTitle.apply {
-            text = movie.title
-            isVisible = true
-        }
-        binding.releaseDate.apply {
-            text = movie.releaseDate
-            isVisible = true
+        fun bind(movie: Movie) {
+            binding.moviePoster.apply {
+                Glide.with(context)
+                    .load(Constants.IMAGE_BASE_PATH + movie.backdropPath)
+                    .into(this)
+                isVisible = true
+            }
+            binding.movieTitle.apply {
+                text = movie.title
+                isVisible = true
+            }
+            binding.releaseDate.apply {
+                text = movie.releaseDate
+                isVisible = true
+            }
         }
     }
 }

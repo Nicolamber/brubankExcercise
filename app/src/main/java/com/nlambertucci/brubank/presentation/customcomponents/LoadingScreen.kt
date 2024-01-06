@@ -14,7 +14,7 @@ class LoadingScreen @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val binding: LoadingScreenComponentBinding by lazy {
-        LoadingScreenComponentBinding.inflate(LayoutInflater.from(context),this, true)
+        LoadingScreenComponentBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun showLoadingScreen() {

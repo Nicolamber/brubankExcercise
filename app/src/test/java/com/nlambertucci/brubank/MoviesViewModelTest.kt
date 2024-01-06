@@ -98,6 +98,7 @@ class MoviesViewModelTest {
         `when`(movieRepository.getMovies()).thenThrow(NullPointerException(errorMessage))
 
         viewModel.initView()
+
         verify(observer).onChanged(MoviesViewModel.MovieStatus.Loading)
         verify(observer).onChanged(MoviesViewModel.MovieStatus.Error(errorMessage))
 
@@ -106,7 +107,9 @@ class MoviesViewModelTest {
 
     @Test
     fun `setAsFavorite should save movie as favorite`() {
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
 
         viewModel.setAsFavorite(movie)
 
@@ -115,7 +118,9 @@ class MoviesViewModelTest {
 
     @Test
     fun `removeMovieFromFavorites should remove movie as favorite`() {
-        val movie = Movie("1", "Star wars I", "", "", "", "")
+        val movie = Movie(
+            "1", "Star wars I", "", "", "", ""
+        )
 
         viewModel.removeMovieFromFavorites(movie)
 
@@ -123,7 +128,7 @@ class MoviesViewModelTest {
     }
 }
 
-private fun getMockedFavMoviesList(): List<Movie>? {
+private fun getMockedFavMoviesList(): List<Movie> {
     return listOf(
         Movie("1", "Avengers: End game", "", "", "", ""),
         Movie("2", "Harry Potter", "", "", "", ""),

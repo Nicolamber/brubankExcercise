@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:alpha="0.5"
+        android:contentDescription="@string/movie_poster_content_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/movie_poster_content_description" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/movie_title"
@@ -27,8 +27,8 @@
         android:textAlignment="textStart"
         android:textColor="@color/text"
         android:textSize="19sp"
-        android:visibility="gone"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/movie_poster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

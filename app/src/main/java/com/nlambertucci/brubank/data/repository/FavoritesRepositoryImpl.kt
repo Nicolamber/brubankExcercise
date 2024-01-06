@@ -12,7 +12,6 @@ class FavoritesRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : FavoritesRepository {
 
-
     override fun getUserFavorites(): MutableList<Movie>? {
         val favMovies = sharedPreferences.getStringSet(
             Constants.MOVIE_LIST_KEY,
@@ -23,7 +22,6 @@ class FavoritesRepositoryImpl @Inject constructor(
             it.toMovie()
         }.toMutableList()
     }
-
 
     override fun saveUserFavorites(movie: Movie) {
         val editor = sharedPreferences.edit()

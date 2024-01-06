@@ -17,14 +17,14 @@ class ErrorScreen @JvmOverloads constructor(
         ErrorScreenComponentBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun showErrorComponent(listener: () -> Unit){
+    fun showErrorComponent(listener: () -> Unit) {
         binding.errorContainer.isVisible = true
         binding.retryAction.setOnClickListener {
             listener.invoke()
         }
     }
 
-    fun hideErrorComponent(){
+    fun hideErrorComponent() {
         binding.errorContainer.isVisible = false
     }
 }

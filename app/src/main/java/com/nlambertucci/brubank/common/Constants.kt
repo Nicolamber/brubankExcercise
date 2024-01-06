@@ -1,6 +1,7 @@
 package com.nlambertucci.brubank.common
 
 object Constants {
+
     // Url base path
     const val BASE_URL = "https://api.themoviedb.org/3/"
 
