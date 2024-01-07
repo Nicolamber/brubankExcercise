@@ -23,5 +23,5 @@ responsabilidades, facilita los tests y permite una mejor reutilización de comp
 - ## Video de prueba de la aplicación
   |Pixel 4 API 34 | Pixel 4 API 34|
   |---------------------------------------------------|----------------------------------|
-  |https://github.com/Nicolamber/brubankExcercise/assets/33043378/9d08aa08-98a6-4587-9b80-0d74efb22c4b|https://github.com/Nicolamber/brubankExcercise/assets/33043378/6f686c88-6972-4a7c-8826-c23977cab1d0|
+  | ![Buscar y eliminar de favs](https://github.com/Nicolamber/brubankExcercise/assets/33043378/04ab4898-a2ab-42a5-8cab-d4de4d63dac8) | ![ListaYdetalle (1)](https://github.com/Nicolamber/brubankExcercise/assets/33043378/b0b343fd-c046-4b2b-8090-cdc636ea4852)|
 
